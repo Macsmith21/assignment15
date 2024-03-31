@@ -1,0 +1,23 @@
+{
+  "name": "assignment14",
+  "version": "1.0.0",
+  "description": "",
+  "main": "script.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Macsmith21/Assignment14.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Macsmith21/Assignment14/issues"
+  },
+  "homepage": "https://github.com/Macsmith21/Assignment14#readme",
+  "dependencies": {
+    "express": "^4.19.1",
+    "nodemon": "^3.1.0"
+  }
+}
