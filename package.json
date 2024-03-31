@@ -18,6 +18,7 @@
   "homepage": "https://github.com/Macsmith21/Assignment14#readme",
   "dependencies": {
     "express": "^4.19.1",
+    "joi": "^17.12.2",
     "nodemon": "^3.1.0"
   }
 }
