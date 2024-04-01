@@ -1,65 +1,148 @@
-
-.flex-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    justify-content: flex-start;
-    align-items: stretch;
-}
-
-.craft {
-    flex: 1 1 200px; 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.craft-image img {
-    width: 100%; 
-    height: auto;
+:root {
+    --primary: coral;
+    --secondary: cornflowerblue;
+  }
+  
+  /* Structure */
+  
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: white;
+  }
+  
+  .recipe {
+    padding: 10px;
+    margin: 10px;
+  }
+  
+  .recipe img {
+    max-width: 100%;
     display: block;
-}
- 
-  @media (max-width: 800px) {
-    .flex-container {
-      flex-direction: column;
-    }
+    margin: auto;
+    border: 1px solid black;
+  }
+  
+  #recipe-details-column {
+    padding: 10px;
+    margin: 10px;
+    background: lightblue;
+    border-radius: 5px;
+  }
+  
+  #add-link {
+    font-size: 0.8em;
+    color: #401e01;
+    border: 2px solid #401e01;
+    padding: 0 4px;
+  }
+  
+  #edit-link {
+    float: right;
+    margin-right: 10px;
+  }
+  
+  #delete-link {
+    float: right;
+  }
+  
+  #add-edit-recipe-container {
+    padding: 10px;
+    margin: 10px;
+    background: lightblue;
+    border-radius: 5px;
+  }
+  
+  /* Form */
+  .w3-modal-content {
+    max-width: 40%;
+    border: 2px solid #401e01;
+  }
+  
+  .w3-container {
+    background: lightgoldenrodyellow;
+    position: relative;
   }
 
-
-
-@media (max-width: 768px) {
-    .craft {
-        width: calc(50% - 40px); 
+  
+  label {
+    display: block;
+  }
+  
+  .inline {
+    display: inline;
+  }
+  
+  #ingredients-p input {
+    margin-top: 5px;
+  }
+  
+  #add-ingredient {
+    color: #401e01;
+    font-size: 0.75em;
+    text-align: right;
+  }
+  
+  #img-prev-section {
+    width: 100px;
+    max-width: 100px;
+    margin-right: 5px;
+  }
+  #img-prev {
+    padding: 2.5%;
+    display: block;
+    margin: auto;
+    max-width: 95%;
+  }
+  
+  /* Typography */
+  
+  #main-nav-items {
+    font-size: 1.2em;
+  }
+  h1 {
+    text-align: center;
+    color: #401e01;
+  }
+  
+  a {
+    text-decoration: none;
+    color: crimson;
+  }
+  
+  .hidden {
+    display: none;
+  }
+  .column {
+    flex: 25%;
+    max-width: 25%;
+    padding: 0 4px;
+  }
+  
+  .column img {
+    margin-top: 8px;
+    vertical-align: middle;
+    width: 100%;
+  }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0 4px;
+  }
+  
+  /* Larger Resolutions */
+  
+/* Responsive layout - makes a two column-layout instead of four columns */
+@media screen and (max-width: 800px) {
+    .column {
+      flex: 50%;
+      max-width: 50%;
     }
-}
-
-@media (max-width: 480px) {
-    .craft {
-        width: 100%; 
+  }
+  
+  /* Responsive layout - makes the two columns stack on top of each other instead of next to each other */
+  @media screen and (max-width: 600px) {
+    .column {
+      flex: 100%;
+      max-width: 100%;
     }
-}
-
-
-.modal {
-    display: none; 
-    position: fixed; 
-    z-index: 1; 
-    left: 0;
-    top: 0;
-    width: 100%; 
-    height: 100%; 
-    overflow: auto; 
-    background-color: rgb(0,0,0); 
-    background-color: rgba(0,0,0,0.4); 
-}
-
-
-
-.modal-content {
-    background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-}
+  }

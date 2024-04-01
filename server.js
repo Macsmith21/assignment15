@@ -2,17 +2,15 @@ const express = require("express");
 const app = express();
 const Joi = require("joi");
 const multer = require("multer");
-const PORT = process.env.PORT || 3000;
-
 app.use(express.static("public"));
-app.use("/.public/uploads", express.static("uploads"));
+app.use("/uploads", express.static("uploads"));
 app.use(express.json());
 const cors = require("cors");
 app.use(cors());
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "./public/uploads/");
+    cb(null, "./public/images/");
   },
   filename: (req, file, cb) => {
     cb(null, file.originalname);
@@ -25,12 +23,12 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
 
-let crafts = [
+let recipes = [
     {
         "name": "Beaded JellyFish",
-        "image": "bead-jellyfish.jpg",
+        "img": "bead-jellyfish.jpg",
         "description": "Create a hanging jellyfish using eggcartons and multicolored beads",
-        "supplies": [
+        "ingredients": [
             "string",
             "egg cartons",
             "beads"
@@ -38,9 +36,9 @@ let crafts = [
     },
     {
         "name": "Character Bookmarks",
-        "image": "bookmarks.jpeg",
+        "img": "bookmarks.jpeg",
         "description": "Create a little birdy bookmark to always remin you were you were",
-        "supplies": [
+        "ingredients": [
             "yellow construction paper",
             "orange construction paper",
             "black construction paper"
@@ -48,9 +46,9 @@ let crafts = [
     },
     {
         "name": "Button Flowers",
-        "image": "button-flowers.jpeg",
+        "img": "button-flowers.jpeg",
         "description": "Create a fun bouquet of flowers with your favorite buttons",
-        "supplies": [
+        "ingredients": [
             "multicolored buttons",
             "multicolored flet",
             "green straws",
@@ -59,18 +57,18 @@ let crafts = [
     },
     {
         "name": "Cheerio Necklaces",
-        "image": "cheerio-necklace.webp",
+        "img": "cheerio-necklace.webp",
         "description": "Create a fun and edible necklace",
-        "supplies": [
+        "ingredients": [
             "Cheerios or Fruit Loops",
             "Elastic string"
         ]
     },
     {
         "name": "Cotton Ball Cupcakes",
-        "image": "cotton-ball-cupcakes.webp",
+        "img": "cotton-ball-cupcakes.webp",
         "description": "Decorate your fun filled cupcake however you want.",
-        "supplies": [
+        "ingredients": [
             "Construction Paper",
             "Cotton Balls",
             "Black Sharpie",
@@ -79,9 +77,9 @@ let crafts = [
     },
     {
         "name": "School Themed Mason Jars",
-        "image": "decorated-jars.jpeg",
+        "img": "decorated-jars.jpeg",
         "description": "Let's make mason jars to ",
-        "supplies": [
+        "ingredients": [
             "Construction Paper",
             "Cotton Balls",
             "Black Sharpie",
@@ -90,9 +88,9 @@ let crafts = [
     },
     {
         "name": "Egg Carton Flowers",
-        "image": "egg-carton-flowers.jpg",
+        "img": "egg-carton-flowers.jpg",
         "description": "Make a beautiful bouquet with egg cartons and other items you can find around the house",
-        "supplies": [
+        "ingredients": [
             "Egg Cartons",
             "Butons",
             "Green Pipe Cleaner",
@@ -102,9 +100,9 @@ let crafts = [
     },
     {
         "name": "Finger Puppets",
-        "image": "finger-puppets.jpeg",
+        "img": "finger-puppets.jpeg",
         "description": "These little critters are easy to make, and will entertain your little one while they make a show.",
-        "supplies": [
+        "ingredients": [
             "Pom-poms",
             "Googly Eyes",
             "Pipe Cleaner"
@@ -112,9 +110,9 @@ let crafts = [
     },
     {
         "name": "Ribbon Flower Headbands",
-        "image": "flower-headbands.jpg",
+        "img": "flower-headbands.jpg",
         "description": "Let your little one show off her new style with these pretty and customizable headbands",
-        "supplies": [
+        "ingredients": [
             "Plain headband",
             "Ribbon",
             "Buttons",
@@ -123,9 +121,9 @@ let crafts = [
     },
     {
         "name": "Hand Print Fish Puppets",
-        "image": "handprint-fish.jpg",
+        "img": "handprint-fish.jpg",
         "description": "We all need to take every opportunity we can to remember those tiny hands, and what better way to do it, then to make fish puppets!",
-        "supplies": [
+        "ingredients": [
             "Popsicle sticks",
             "Cardstock",
             "Gems",
@@ -134,18 +132,18 @@ let crafts = [
     },
     {
         "name": "Hand Print Tree",
-        "image": "hand-print-tree.jpeg",
+        "img": "hand-print-tree.jpeg",
         "description": "This is a fun way to get your little one into finger painting.",
-        "supplies": [
+        "ingredients": [
             "Watercolor Paper",
             "Finger paint"
         ]
     },
     {
         "name": "Melted Bead Bowl",
-        "image": "melted-bead-bowl.jpeg",
+        "img": "melted-bead-bowl.jpeg",
         "description": "All they need to do is shape their faviorte design, warm it up and they have a brand new bowl.",
-        "supplies": [
+        "ingredients": [
             "Beads",
             "Bowl",
             "Parchment paper"
@@ -153,9 +151,9 @@ let crafts = [
     },
     {
         "name": "Monster Kites",
-        "image": "monster-rolls.jpg",
+        "img": "monster-rolls.jpg",
         "description": "Let's make those scary toilet paper rolls fly!",
-        "supplies": [
+        "ingredients": [
             "Toilet paper rolls",
             "Paint",
             "Tissue Paper",
@@ -164,9 +162,9 @@ let crafts = [
     },
     {
         "name": "Pool Noodle Boats",
-        "image": "noodle-boats.png",
+        "img": "noodle-boats.png",
         "description": "Let's make a boat that will actually float, due to the floating bottom of a pool noodle.",
-        "supplies": [
+        "ingredients": [
             "Pool Noodle",
             "Straw",
             "Plastic Paper"
@@ -174,9 +172,9 @@ let crafts = [
     },
     {
         "name": "Paper Plate Bees",
-        "image": "paper-plate-bees.jpeg",
+        "img": "paper-plate-bees.jpeg",
         "description": "Let's have fun with making cute little bees, or big bees actually.",
-        "supplies": [
+        "ingredients": [
             "Paper Plate",
             "Googly Eyes",
             "Close Pins",
@@ -187,9 +185,9 @@ let crafts = [
     },
     {
         "name": "Paper Plate Dinosaurs",
-        "image": "paper-plate-dinosaurs.jpg",
+        "img": "paper-plate-dinosaurs.jpg",
         "description": "Who would have thought that half a paper plate would be the base of a dinosaur.",
-        "supplies": [
+        "ingredients": [
             "Paper Plate",
             "Paint",
             "Close Pins",
@@ -198,9 +196,9 @@ let crafts = [
     },
     {
         "name": "Porcupine Leafs",
-        "image": "porcupine-leaf.webp",
+        "img": "porcupine-leaf.webp",
         "description": "Let's turn an ordinary paper plate into a fun filled mask.",
-        "supplies": [
+        "ingredients": [
             "Leafs",
             "Berries",
             "Acorns",
@@ -209,9 +207,9 @@ let crafts = [
     },
     {
         "name": "Rainbow Cloud",
-        "image": "rainbow-cloud.webp",
+        "img": "rainbow-cloud.webp",
         "description": "Some cotton and color and you'll have a beautiful rainbow.",
-        "supplies": [
+        "ingredients": [
             "Paper Plate",
             "Cotton Balls",
             "Construction Paper"
@@ -219,27 +217,27 @@ let crafts = [
     },
     {
         "name": "Fun Shaped Crayons",
-        "image": "shaped-crayons.jpg",
+        "img": "shaped-crayons.jpg",
         "description": "Let's melt some crayons together and let them harden into fun shapes.",
-        "supplies": [
+        "ingredients": [
             "Broken Crayons",
             "Mold"
         ]
     },
     {
         "name": "Straw Farris Wheel",
-        "image": "straw-faris-wheel.jpg",
+        "img": "straw-faris-wheel.jpg",
         "description": "It might be too small to ride, but this farris wheel is the most colorful of all.",
-        "supplies": [
+        "ingredients": [
             "Multicolored straws",
             "Platform"
         ]
     },
     {
         "name": "Sunny String",
-        "image": "sun-string.jpg",
+        "img": "sun-string.jpg",
         "description": "Let's practice our fine motor skills while we weave the string into a fun sun.",
-        "supplies": [
+        "ingredients": [
             "Yellow String",
             "Paper Plate",
             "Yellow construction paper",
@@ -248,9 +246,9 @@ let crafts = [
     },
     {
         "name": "Tissue Ballerinas",
-        "image": "tisue-dancer.jpeg",
+        "img": "tisue-dancer.jpeg",
         "description": "These beautiful dancers will look great on display",
-        "supplies": [
+        "ingredients": [
             "Pipe cleaner",
             "Tissue Paper",
             "Elastics"
@@ -258,9 +256,9 @@ let crafts = [
     },
     {
         "name": "Toilet Paper Roll Animals",
-        "image": "toilet-paper-animals.jpeg",
+        "img": "toilet-paper-animals.jpeg",
         "description": "These beautiful dancers will look great on display",
-        "supplies": [
+        "ingredients": [
             "Toilet Paper Rolls",
             "Construction Paper",
             "Googly Eyes"
@@ -268,9 +266,9 @@ let crafts = [
     },
     {
         "name": "Toilet Paper Butterfly",
-        "image": "toilet-paper-butterfly.jpg",
+        "img": "toilet-paper-butterfly.jpg",
         "description": "Such a sweat little flyer",
-        "supplies": [
+        "ingredients": [
             "Toilet Paper Rolls",
             "Construction Paper",
             "Googly Eyes",
@@ -279,53 +277,53 @@ let crafts = [
     },
     {
         "name": "Valentines Jar",
-        "image": "valentines-jar.webp",
+        "img": "valentines-jar.webp",
         "description": "So much hearts all in one",
-        "supplies": [
+        "ingredients": [
             "Clay",
             "Glitter"
         ]
     }
 ];
-app.get("/api/crafts", (req, res) => {
-    res.send(crafts);
-  });
-  
-  app.post("/api/crafts", upload.single("img"), (req, res) => {
-    const result = validatecraft(req.body);
-  
-    if (result.error) {
-      res.status(400).send(result.error.details[0].message);
-      return;
-    }
-  
-    const craft = {
-      _id: crafts.length + 1,
-      name: req.body.name,
-      image: req.file.image,
-      description: req.body.description,
-      supplies: req.body.ingredients.split(","),
-    };
-  
-    if (req.file) {
-      craft.img = "./public/uploads/" + req.file.filename;
-    }
-  
-    crafts.push(craft);
-    res.send(crafts);
-  });
-  
-  const validatecraft = (craft) => {
-    const schema = Joi.object({
-      _id: Joi.allow(""),
-      name: Joi.string().min(3).required(),
-      description: Joi.string().min(3).required(),
-      supplies: Joi.array().items(Joi,string()).required(),
-    });
-  
-    return schema.validate(craft);
+
+app.get("/api/recipes", (req, res) => {
+  res.send(recipes);
+});
+
+app.post("/api/recipes", upload.single("img"), (req, res) => {
+  const result = validateRecipe(req.body);
+
+  if (result.error) {
+    res.status(400).send(result.error.details[0].message);
+    return;
+  }
+
+  const recipe = {
+    _id: recipes.length + 1,
+    name: req.body.name,
+    description: req.body.description,
+    ingredients: req.body.ingredients.split(","),
   };
-  
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+
+  if (req.file) {
+    recipe.img =  req.file.filename;
+  }
+
+  recipes.push(recipe);
+  res.send(recipes);
+});
+
+const validateRecipe = (recipe) => {
+  const schema = Joi.object({
+    _id: Joi.allow(""),
+    ingredients: Joi.allow(""),
+    name: Joi.string().min(3).required(),
+    description: Joi.string().min(3).required(),
   });
+
+  return schema.validate(recipe);
+};
+
+app.listen(3000, () => {
+  console.log("serving port 3000");
+});
