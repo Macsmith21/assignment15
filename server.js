@@ -2,6 +2,12 @@ const express = require("express");
 const app = express();
 const Joi = require("joi");
 const multer = require("multer");
+const PORT = process.env.PORT || 3000;
+
+
+
+
+
 app.use(express.static("public"));
 app.use("/uploads", express.static("uploads"));
 app.use(express.json());
@@ -296,37 +302,38 @@ app.get("/api/crafts", (req, res) => {
   });
   
   app.post("/api/crafts", upload.single("img"), (req, res) => {
-    const result = validateRecipe(req.body);
+    const result = validatecraft(req.body);
   
     if (result.error) {
       res.status(400).send(result.error.details[0].message);
       return;
     }
   
-    const recipe = {
+    const craft = {
       _id: crafts.length + 1,
       name: req.body.name,
+      image: req.file.image,
       description: req.body.description,
-      ingredients: req.body.ingredients.split(","),
+      supplies: req.body.ingredients.split(","),
     };
   
     if (req.file) {
-      recipe.img = "images/" + req.file.filename;
+      craft.img = "images/" + req.file.filename;
     }
   
-    crafts.push(recipe);
+    crafts.push(craft);
     res.send(crafts);
   });
   
-  const validateRecipe = (recipe) => {
+  const validatecraft = (craft) => {
     const schema = Joi.object({
       _id: Joi.allow(""),
-      ingredients: Joi.allow(""),
       name: Joi.string().min(3).required(),
       description: Joi.string().min(3).required(),
+      supplies: Joi.allow(""),
     });
   
-    return schema.validate(recipe);
+    return schema.validate(craft);
   };
   
   app.listen(PORT, () => {

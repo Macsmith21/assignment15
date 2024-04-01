@@ -57,26 +57,24 @@ document.getElementById('add-item-form').addEventListener('submit', async (e) =>
     let formData = new FormData(e.target);
 
     try {
-        let response = await fetch('/api/crafts', {
+        let response = await fetch('api/crafts', {
             method: 'POST',
             body: formData,
         });
 
-        if (response.ok) {
-            const newCraft = await response.json(); // Get the new craft data from the response
-
-            // Now, append the new craft to the DOM
-            appendCraftToDOM(newCraft);
-
-            console.log('Craft added successfully');
-            document.getElementById('addItemModal').style.display = 'none';
-        } else {
-            console.error('Failed to add craft');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
+
+        const newCraft = await response.json();
+        console.log('Craft added successfully', newCraft);
+        // Proceed with your success scenario
     } catch (error) {
         console.error('Error adding craft:', error);
+        // Inform the user about the error in a user-friendly way
     }
 });
+
 function appendCraftToDOM(craft) {
     let craftList = document.getElementById("craft-list");
     let craftElement = document.createElement("div");
