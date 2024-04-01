@@ -1,3 +1,5 @@
+
+
 const showCrafts = async () => {
     try {
         let response = await fetch("/api/crafts");

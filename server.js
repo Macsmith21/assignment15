@@ -1,21 +1,45 @@
 const express = require('express');
+const multer = require('multer');
+const joi = require('joi');
+const cors = require('cors');
+const path = require('path');
+const fs = require('fs');
+
 const app = express();
-const port = process.env.PORT || 3000;
-app.use(express.static("public"));
+const PORT = process.env.PORT || 3000;
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+// Enable JSON parsing for the express app
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use(cors());
+
+// Ensure the uploads directory exists
+const uploadsDir = path.join(__dirname, 'public', 'uploads');
+fs.mkdirSync(uploadsDir, { recursive: true });
+
+app.use(express.static('public'));
+
+// Multer setup for image handling
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadsDir);
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
 });
 
-app.get('/',(req,res) => {
-    res.sendFile(__dirname + "/index.html");
-});
+const upload = multer({ storage: storage });
 
-app.get('/api/crafts', (req, res) => {
-    res.json(crafts);
-  });
+// joi schema for validating incoming craft data
+const craftSchema = joi.object({
+  name: joi.string().required(),
+  description: joi.string().required(),
+  supplies: joi.array().items(joi.string()).required(), // Expecting an array of strings for supplies
+});
   
-
+  
 
 const crafts = [
     {
