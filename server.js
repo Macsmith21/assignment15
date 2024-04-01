@@ -1,43 +1,31 @@
-const express = require('express');
-const multer = require('multer');
-const joi = require('joi');
-const cors = require('cors');
-const path = require('path');
-const fs = require('fs');
-
+const express = require("express");
 const app = express();
-const PORT = process.env.PORT || 3000;
-
-// Enable JSON parsing for the express app
+const Joi = require("joi");
+const multer = require("multer");
+app.use(express.static("public"));
+app.use("/uploads", express.static("uploads"));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
+const cors = require("cors");
 app.use(cors());
 
-// Ensure the uploads directory exists
-const uploadsDir = path.join(__dirname, 'public', 'uploads');
-fs.mkdirSync(uploadsDir, { recursive: true });
-
-app.use(express.static('public'));
-
-// Multer setup for image handling
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, uploadsDir);
+    cb(null, "./public/images/");
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname);
-  }
+    cb(null, file.originalname);
+  },
 });
 
 const upload = multer({ storage: storage });
 
-// joi schema for validating incoming craft data
-const craftSchema = joi.object({
-  name: joi.string().required(),
-  description: joi.string().required(),
-  supplies: joi.array().items(joi.string()).required(), // Expecting an array of strings for supplies
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/index.html");
 });
+
+
+
+
   
   
 
@@ -303,3 +291,44 @@ const crafts = [
         ]
     }
 ];
+app.get("/api/crafts", (req, res) => {
+    res.send(crafts);
+  });
+  
+  app.post("/api/crafts", upload.single("img"), (req, res) => {
+    const result = validateRecipe(req.body);
+  
+    if (result.error) {
+      res.status(400).send(result.error.details[0].message);
+      return;
+    }
+  
+    const recipe = {
+      _id: crafts.length + 1,
+      name: req.body.name,
+      description: req.body.description,
+      ingredients: req.body.ingredients.split(","),
+    };
+  
+    if (req.file) {
+      recipe.img = "images/" + req.file.filename;
+    }
+  
+    crafts.push(recipe);
+    res.send(crafts);
+  });
+  
+  const validateRecipe = (recipe) => {
+    const schema = Joi.object({
+      _id: Joi.allow(""),
+      ingredients: Joi.allow(""),
+      name: Joi.string().min(3).required(),
+      description: Joi.string().min(3).required(),
+    });
+  
+    return schema.validate(recipe);
+  };
+  
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });

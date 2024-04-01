@@ -8,7 +8,7 @@ const showCrafts = async () => {
 
         crafts.forEach((craft) => {
             let craftElement = document.createElement("div");
-            craftElement.className = "craft";
+            craftElement.className = "w3-col l3 m6 w3-margin-bottom";
             craftElement.innerHTML = `
                 <div class="craft-image">
                     <img src="/images/${craft.image}" alt="${craft.name}">
@@ -52,24 +52,24 @@ document.querySelector('.close-add-item').addEventListener('click', () => {
     document.getElementById('addItemModal').style.display = 'none';
 });
 
-// Handle the submission of the Add Item Form
 document.getElementById('add-item-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-
-    // Construct FormData object to include files for image upload
     let formData = new FormData(e.target);
 
     try {
         let response = await fetch('/api/crafts', {
             method: 'POST',
-            body: formData // Assuming your server can handle FormData for file upload
+            body: formData,
         });
 
         if (response.ok) {
+            const newCraft = await response.json(); // Get the new craft data from the response
+
+            // Now, append the new craft to the DOM
+            appendCraftToDOM(newCraft);
+
             console.log('Craft added successfully');
             document.getElementById('addItemModal').style.display = 'none';
-            // Optionally, refresh the list of crafts
-            showCrafts();
         } else {
             console.error('Failed to add craft');
         }
@@ -77,6 +77,26 @@ document.getElementById('add-item-form').addEventListener('submit', async (e) =>
         console.error('Error adding craft:', error);
     }
 });
+function appendCraftToDOM(craft) {
+    let craftList = document.getElementById("craft-list");
+    let craftElement = document.createElement("div");
+    craftElement.className = "w3-col l3 m6 w3-margin-bottom";
+
+    // Assume the image is stored in a 'public/uploads' directory accessible by your static server
+    let imagePath = `/uploads/${craft.image}`;
+
+    craftElement.innerHTML = `
+        <div class="craft-image">
+            <img src="${imagePath}" alt="${craft.name}">
+        </div>
+    `;
+
+    // Append the new element to the craft list
+    craftList.appendChild(craftElement);
+
+    // Optionally, you can also add the click event listener to show the craft modal
+    craftElement.querySelector('.craft-image img').addEventListener('click', () => showCraftModal(craft));
+}
 
 
 window.onload = showCrafts;
