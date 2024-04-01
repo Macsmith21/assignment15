@@ -1,6 +1,12 @@
-
-
-const showCrafts = async () => {
+const getRecipes = async () => {
+    try {
+      return (await fetch("api/crafts/")).json();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
+  const showCrafts = async () => {
     try {
         let response = await fetch("/api/crafts");
         let crafts = await response.json();
@@ -42,59 +48,86 @@ const showCraftModal = (craft) => {
         document.getElementById('myModal').style.display = 'none';
     });
 };
-// Show the Add Item Modal
-document.getElementById('Add-button').addEventListener('click', () => {
-    document.getElementById('addItemModal').style.display = 'block';
-});
-
-// Close the Add Item Modal
-document.querySelector('.close-add-item').addEventListener('click', () => {
-    document.getElementById('addItemModal').style.display = 'none';
-});
-
-document.getElementById('add-item-form').addEventListener('submit', async (e) => {
+  
+  const displayDetails = (craft) => {
+  };
+  
+  const addRecipe = async (e) => {
     e.preventDefault();
-    let formData = new FormData(e.target);
-
-    try {
-        let response = await fetch('api/crafts', {
-            method: 'POST',
-            body: formData,
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const newCraft = await response.json();
-        console.log('Craft added successfully', newCraft);
-        // Proceed with your success scenario
-    } catch (error) {
-        console.error('Error adding craft:', error);
-        // Inform the user about the error in a user-friendly way
+    const form = document.getElementById("add-craft-form");
+    const formData = new FormData(form);
+    let response;
+    formData.append("ingredients", getIngredients());
+  
+    console.log(...formData);
+  
+    response = await fetch("/api/crafts", {
+      method: "POST",
+      body: formData,
+    });
+  
+    //successfully got data from server
+    if (response.status != 200) {
+      console.log("Error posting data");
     }
-});
-
-function appendCraftToDOM(craft) {
-    let craftList = document.getElementById("craft-list");
-    let craftElement = document.createElement("div");
-    craftElement.className = "w3-col l3 m6 w3-margin-bottom";
-
-    // Assume the image is stored in a 'public/uploads' directory accessible by your static server
-    let imagePath = `/uploads/${craft.image}`;
-
-    craftElement.innerHTML = `
-        <div class="craft-image">
-            <img src="${imagePath}" alt="${craft.name}">
-        </div>
-    `;
-
-    // Append the new element to the craft list
-    craftList.appendChild(craftElement);
-
-    // Optionally, you can also add the click event listener to show the craft modal
-    craftElement.querySelector('.craft-image img').addEventListener('click', () => showCraftModal(craft));
-}
-
-
-window.onload = showCrafts;
+  
+    await response.json();
+    resetForm();
+    document.getElementById("dialog").style.display = "none";
+    showRecipes();
+  };
+  
+  const getIngredients = () => {
+    const inputs = document.querySelectorAll("#supply-boxes input");
+    let ingredients = [];
+  
+    inputs.forEach((input) => {
+      ingredients.push(input.value);
+    });
+  
+    return ingredients;
+  };
+  
+  const resetForm = () => {
+    const form = document.getElementById("add-craft-form");
+    form.reset();
+    document.getElementById("supplys-boxes").innerHTML = "";
+    document.getElementById("img-prev").src = "";
+  };
+  
+  const showRecipeForm = (e) => {
+    e.preventDefault();
+    openDialog("add-craft-form");
+    resetForm();
+  };
+  
+  const addIngredient = (e) => {
+    e.preventDefault();
+    const section = document.getElementById("supply-boxes");
+    const input = document.createElement("input");
+    input.type = "text";
+    section.append(input);
+  };
+  
+  const openDialog = (id) => {
+    document.getElementById("dialog").style.display = "block";
+    document.querySelectorAll("#dialog-details > *").forEach((item) => {
+      item.classList.add("hidden");
+    });
+    document.getElementById(id).classList.remove("hidden");
+  };
+  
+  //initial code
+  window.onload = showCrafts;
+  document.getElementById("add-craft-form").onsubmit = addRecipe;
+  document.getElementById("add-supply").onclick = addIngredient;
+  
+  document.getElementById("img").onchange = (e) => {
+    if (!e.target.files.length) {
+      document.getElementById("img-prev").src = "";
+      return;
+    }
+    document.getElementById("img-prev").src = URL.createObjectURL(
+      e.target.files.item(0)
+    );
+  };

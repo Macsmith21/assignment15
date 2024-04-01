@@ -4,19 +4,15 @@ const Joi = require("joi");
 const multer = require("multer");
 const PORT = process.env.PORT || 3000;
 
-
-
-
-
 app.use(express.static("public"));
-app.use("/uploads", express.static("uploads"));
+app.use("/.public/uploads", express.static("uploads"));
 app.use(express.json());
 const cors = require("cors");
 app.use(cors());
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "./public/images/");
+    cb(null, "./public/uploads/");
   },
   filename: (req, file, cb) => {
     cb(null, file.originalname);
@@ -29,13 +25,7 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
 
-
-
-
-  
-  
-
-const crafts = [
+let crafts = [
     {
         "name": "Beaded JellyFish",
         "image": "bead-jellyfish.jpg",
@@ -318,7 +308,7 @@ app.get("/api/crafts", (req, res) => {
     };
   
     if (req.file) {
-      craft.img = "images/" + req.file.filename;
+      craft.img = "./public/uploads/" + req.file.filename;
     }
   
     crafts.push(craft);
@@ -330,7 +320,7 @@ app.get("/api/crafts", (req, res) => {
       _id: Joi.allow(""),
       name: Joi.string().min(3).required(),
       description: Joi.string().min(3).required(),
-      supplies: Joi.allow(""),
+      supplies: Joi.array().items(Joi,string()).required(),
     });
   
     return schema.validate(craft);
