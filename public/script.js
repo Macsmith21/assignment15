@@ -8,15 +8,14 @@ const getRecipes = async () => {
   
   const showRecipes = async () => {
     let recipes = await getRecipes();
-    // Retrieve references to the column divs
+
     const columns = [
       document.getElementById("column-1"),
       document.getElementById("column-2"),
       document.getElementById("column-3"),
       document.getElementById("column-4"),
     ];
-  
-    // Ensure columns are cleared at the beginning
+
     columns.forEach(column => column.innerHTML = "");
   
     recipes.forEach((recipe, index) => {
@@ -36,7 +35,7 @@ const getRecipes = async () => {
         displayDetails(recipe);
       };
   
-      // Determine which column to add the recipe to
+
       const columnIndex = index % columns.length;
       columns[columnIndex].append(section);
     });
