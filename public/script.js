@@ -1,38 +1,39 @@
-const getRecipes = async () => {
+const getCrafts = async () => {
     try {
-      return (await fetch("api/recipes/")).json();
+      return (await fetch("api/crafts/")).json();
     } catch (error) {
       console.log(error);
     }
   };
   
-  const showRecipes = async () => {
-    let recipes = await getRecipes();
+  const showCrafts = async () => {
+    let crafts = await getCrafts();
 
     const columns = [
       document.getElementById("column-1"),
       document.getElementById("column-2"),
       document.getElementById("column-3"),
       document.getElementById("column-4"),
+
     ];
 
     columns.forEach(column => column.innerHTML = "");
   
-    recipes.forEach((recipe, index) => {
+    crafts.forEach((craft, index) => {
       const section = document.createElement("section");
-      section.classList.add("recipe");
+      section.classList.add("craft");
   
       const a = document.createElement("a");
       a.href = "#";
       section.append(a);
       
       const img = document.createElement("img");
-      img.src = "/images/"+recipe.img;
+      img.src = "/images/"+craft.img;
       a.append(img);
   
       a.onclick = (e) => {
         e.preventDefault();
-        displayDetails(recipe);
+        displayDetails(craft);
       };
   
 
@@ -41,87 +42,149 @@ const getRecipes = async () => {
     });
   };
   
-  
-  const displayDetails = (recipe) => {
-    openDialog("recipe-details");
-    const recipeDetails = document.getElementById("recipe-details");
-    recipeDetails.innerHTML = "";
-    recipeDetails.classList.remove("hidden");
+  const displayDetails = (craft) => {
+    openDialog("craft-details");
+    const craftDetails = document.getElementById("craft-details");
+    craftDetails.innerHTML = "";
+    craftDetails.classList.remove("hidden");
   
     const h3 = document.createElement("h3");
-    h3.innerHTML = recipe.name;
-    recipeDetails.append(h3);
+    h3.innerHTML = craft.name;
+    craftDetails.append(h3);
+  
+    const dLink = document.createElement("a");
+    dLink.innerHTML = "	&#9249;";
+    craftDetails.append(dLink);
+    dLink.id = "delete-link";
+  
+    const eLink = document.createElement("a");
+    eLink.innerHTML = "&#9998;";
+    craftDetails.append(eLink);
+    eLink.id = "edit-link";
   
     const p = document.createElement("p");
-    recipeDetails.append(p);
-    p.innerHTML = recipe.description;
+    craftDetails.append(p);
+    p.innerHTML = craft.description;
   
     const ul = document.createElement("ul");
-    recipeDetails.append(ul);
-    console.log(recipe.ingredients);
-    recipe.ingredients.forEach((ingredient) => {
+    craftDetails.append(ul);
+    console.log(craft.supplies);
+    craft.supplies.forEach((supply) => {
       const li = document.createElement("li");
       ul.append(li);
-      li.innerHTML = ingredient;
+      li.innerHTML = supply;
     });
   
-    const spoon = document.createElement("section");
-    spoon.classList.add("spoon");
-    recipeDetails.append(spoon);
+
+    eLink.onclick = showCraftForm;
+    dLink.onclick = deleteCraft.bind(this, craft);
+  
+    populateEditForm(craft);
   };
   
-  const addRecipe = async (e) => {
+  const populateEditForm = (craft) =>{
+    const form = document.getElementById("craft-form");
+    form._id.value = craft._id;
+    form.name.value = craft.name;
+    form.description.value = craft.description;
+    document.getElementById("img-prev").src = "/images/"+craft.img;
+    populateSupplies(craft.supplies);
+  };
+  
+  const populateSupplies = (supplies) => {
+    const section = document.getElementById("supply-boxes");
+    supplies.forEach((supply)=>{
+      const input = document.createElement("input");
+      input.type = "text";
+      input.value = supply;
+      section.append(input);
+    });
+  };
+  
+  const addEditCraft = async (e) => {
     e.preventDefault();
-    const form = document.getElementById("add-recipe-form");
+    const form = document.getElementById("craft-form");
     const formData = new FormData(form);
     let response;
-    formData.append("ingredients", getIngredients());
+    formData.append("supplies", getSupplies());
   
     console.log(...formData);
   
-    response = await fetch("/api/recipes", {
-      method: "POST",
-      body: formData,
-    });
+    //add request
+    if (form._id.value.trim() == "") {
+      console.log("in post");
+      response = await fetch("/api/crafts", {
+        method: "POST",
+        body: formData,
+      });
+    } else {
+      //put request
+      response = await fetch(`/api/crafts/${form._id.value}`, {
+        method: "PUT",
+        body: formData,
+      });
+    }
   
     //successfully got data from server
     if (response.status != 200) {
-      console.log("Error posting data");
+      console.log("Error adding / editing data");
     }
   
     await response.json();
     resetForm();
     document.getElementById("dialog").style.display = "none";
-    showRecipes();
+    showCrafts();
   };
   
-  const getIngredients = () => {
-    const inputs = document.querySelectorAll("#ingredient-boxes input");
-    let ingredients = [];
-  
-    inputs.forEach((input) => {
-      ingredients.push(input.value);
+  const deleteCraft = async(craft)=> {
+    let response = await fetch(`/api/crafts/${craft._id}`, {
+      method:"DELETE",
+      headers:{
+        "Content-Type":"application/json;charset=utf-8"
+      }
     });
   
-    return ingredients;
+    if(response.status != 200){
+      console.log("Error deleting");
+      return;
+    }
+  
+    let result = await response.json();
+    resetForm();
+    showCrafts();
+    document.getElementById("dialog").style.display = "none";
+  };
+  
+  const getSupplies = () => {
+    const inputs = document.querySelectorAll("#supply-boxes input");
+    let supplies = [];
+  
+    inputs.forEach((input) => {
+      supplies.push(input.value);
+    });
+  
+    return supplies;
   };
   
   const resetForm = () => {
-    const form = document.getElementById("add-recipe-form");
+    const form = document.getElementById("craft-form");
     form.reset();
-    document.getElementById("ingredient-boxes").innerHTML = "";
+    form._id.value = "";
+    document.getElementById("supply-boxes").innerHTML = "";
     document.getElementById("img-prev").src = "";
   };
   
-  const showRecipeForm = (e) => {
-    e.preventDefault();
-    openDialog("add-recipe-form");
-    resetForm();
+  const showCraftForm = (e) => {
+    openDialog("craft-form");
+    console.log(e.target);
+    if (e.target.getAttribute("id") != "edit-link") {
+      resetForm();
+    }
   };
   
-  const addIngredient = (e) => {
+  const addSupply = (e) => {
     e.preventDefault();
-    const section = document.getElementById("ingredient-boxes");
+    const section = document.getElementById("supply-boxes");
     const input = document.createElement("input");
     input.type = "text";
     section.append(input);
@@ -136,10 +199,10 @@ const getRecipes = async () => {
   };
   
   //initial code
-  showRecipes();
-  document.getElementById("add-recipe-form").onsubmit = addRecipe;
-  document.getElementById("add-link").onclick = showRecipeForm;
-  document.getElementById("add-ingredient").onclick = addIngredient;
+  showCrafts();
+  document.getElementById("craft-form").onsubmit = addEditCraft;
+  document.getElementById("add-link").onclick = showCraftForm;
+  document.getElementById("add-supply").onclick = addSupply;
   
   document.getElementById("img").onchange = (e) => {
     if (!e.target.files.length) {

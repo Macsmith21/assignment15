@@ -1,6 +1,6 @@
 :root {
-    --primary: coral;
-    --secondary: cornflowerblue;
+    --primary: black;
+    --secondary: white;
   }
   
   /* Structure */
@@ -10,19 +10,13 @@
     background: white;
   }
   
-  .recipe {
-    padding: 10px;
-    margin: 10px;
-  }
-  
-  .recipe img {
+  .craft img {
     max-width: 100%;
     display: block;
-    margin: auto;
     border: 1px solid black;
   }
   
-  #recipe-details-column {
+  #craft-details-column {
     padding: 10px;
     margin: 10px;
     background: lightblue;
@@ -31,21 +25,22 @@
   
   #add-link {
     font-size: 0.8em;
-    color: #401e01;
-    border: 2px solid #401e01;
+    color: black;
     padding: 0 4px;
   }
   
   #edit-link {
     float: right;
     margin-right: 10px;
+    font-size: 200%;
   }
   
   #delete-link {
     float: right;
+    font-size: 200%;
   }
   
-  #add-edit-recipe-container {
+  #add-edit-craft-container {
     padding: 10px;
     margin: 10px;
     background: lightblue;
@@ -55,15 +50,21 @@
   /* Form */
   .w3-modal-content {
     max-width: 40%;
-    border: 2px solid #401e01;
+    border: 2px solid black;
   }
   
   .w3-container {
-    background: lightgoldenrodyellow;
+    background: whitesmoke;
     position: relative;
   }
+  .w3-container li{
+  padding: 5px;
 
-  
+  }
+  #craft-form{
+    text-align: center;
+  }
+
   label {
     display: block;
   }
@@ -72,26 +73,25 @@
     display: inline;
   }
   
-  #ingredients-p input {
+  #supplies-p input {
     margin-top: 5px;
   }
   
-  #add-ingredient {
+  #add-supply {
     color: #401e01;
     font-size: 0.75em;
     text-align: right;
   }
   
   #img-prev-section {
-    width: 100px;
-    max-width: 100px;
-    margin-right: 5px;
+    margin: auto;
   }
   #img-prev {
     padding: 2.5%;
     display: block;
-    margin: auto;
     max-width: 95%;
+    margin: auto;
+    border: 5px solid black;
   }
   
   /* Typography */
@@ -101,7 +101,7 @@
   }
   h1 {
     text-align: center;
-    color: #401e01;
+    color: black;
   }
   
   a {
@@ -115,11 +115,11 @@
   .column {
     flex: 25%;
     max-width: 25%;
-    padding: 0 4px;
+
   }
   
   .column img {
-    margin-top: 8px;
+
     vertical-align: middle;
     width: 100%;
   }
